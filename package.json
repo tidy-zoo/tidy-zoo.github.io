@@ -1,0 +1,26 @@
+{
+  "name": "a-million-butt",
+  "packageManager": "yarn@4.3.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "prettier": {
+    "trailingComma": "none",
+    "jsxSingleQuote": true,
+    "singleQuote": true,
+    "semi": true,
+    "printWidth": 120,
+    "tabWidth": 2,
+    "arrowParens": "avoid"
+  },
+  "devDependencies": {
+    "vite": "^5.3.3"
+  },
+  "dependencies": {
+    "pixi.js": "^8.2.2"
+  }
+}

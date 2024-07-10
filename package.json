@@ -1,6 +1,5 @@
 {
   "name": "a-million-butt",
-  "packageManager": "yarn@4.3.1",
   "private": true,
   "type": "module",
   "scripts": {

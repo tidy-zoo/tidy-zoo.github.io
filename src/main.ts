@@ -104,11 +104,25 @@ declare global {
   app.stage.addChild(result);
   result.x = app.stage.width * 0.5;
 
+  const matchResult: (number | null)[] = [null, null];
+  const updateMatchResult = (updater: (r: typeof matchResult) => void) => {
+    if (matchResult[0] !== null && matchResult[1] !== null) {
+      matchResult[0] = matchResult[1] = null;
+    }
+    updater(matchResult);
+    result.head = matchResult[0];
+    result.butt = matchResult[1];
+  };
+
   reelLeft.on('click_symbol', payload => {
-    result.head = payload.id;
+    updateMatchResult(matchResult => {
+      matchResult[0] = payload.id;
+    });
   });
 
   reelRight.on('click_symbol', payload => {
-    result.butt = payload.id;
+    updateMatchResult(matchResult => {
+      matchResult[1] = payload.id;
+    });
   });
 })();

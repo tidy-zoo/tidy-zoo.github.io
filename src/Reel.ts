@@ -1,41 +1,42 @@
-import { Assets, BlurFilter, Container, Sprite, Texture, Ticker } from 'pixi.js';
-
-const SYMBOL_SIZE = 150;
+import { BlurFilter, Container, Sprite, Texture, Ticker } from 'pixi.js';
 
 export interface ReelOptions {
   numSymbols: number;
-  textures: string[];
+  symbolSize: number;
+  textures: Texture[];
 }
 
 export default class Reel extends Container {
-  static async create(opt: ReelOptions): Promise<Reel> {
-    await Assets.load(opt.textures);
-
-    const reel = new Reel();
-    reel._textures = opt.textures.map(url => Texture.from(url));
-    reel._blur = reel.filters = new BlurFilter();
-    reel._numSymbols = opt.numSymbols;
-
-    for (let i = -1; i < reel._numSymbols; i++) {
-      const rc = new ReelSymbol();
-      rc.y = i * SYMBOL_SIZE;
-      rc.random(reel._textures);
-      rc.interactive = true;
-      reel.addChild(rc);
-
-      rc.addEventListener('click', e => {
-        reel.emit('click_symbol', { id: rc.id });
-      });
-    }
-
-    return reel;
-  }
-
   _blur: BlurFilter;
   _speed: number;
   _numSymbols: number;
+  _symbolSize: number;
   _lastSymbolIndex: number;
   _textures: Texture[];
+
+  constructor(opt: ReelOptions) {
+    super();
+    this._textures = opt.textures;
+    this._blur = this.filters = new BlurFilter();
+    this._numSymbols = opt.numSymbols;
+    this._symbolSize = opt.symbolSize;
+
+    for (let i = -1; i < this._numSymbols; i++) {
+      const rc = new ReelSymbol();
+      rc.scale.x = rc.scale.y = opt.symbolSize / 400;
+      rc.y = i * opt.symbolSize;
+      rc.random(this._textures);
+      rc.interactive = true;
+      this.addChild(rc);
+
+      const onClick = e => {
+        this.emit('click_symbol', { id: rc.id });
+      };
+
+      rc.addEventListener('click', onClick);
+      rc.addEventListener('touchend', onClick);
+    }
+  }
 
   run(downward: boolean = true) {
     this.adjustSpeed(5);
@@ -71,8 +72,8 @@ export default class Reel extends Container {
   moveUpward() {
     const lastChild = this.getChildAt(this._lastSymbolIndex) as ReelSymbol;
 
-    if (lastChild.y <= -SYMBOL_SIZE) {
-      lastChild.y = SYMBOL_SIZE * this._numSymbols;
+    if (lastChild.y <= -this._symbolSize) {
+      lastChild.y = this._symbolSize * this._numSymbols;
       lastChild.random(this._textures);
 
       if (this._lastSymbolIndex === this._numSymbols) {
@@ -90,8 +91,8 @@ export default class Reel extends Container {
   moveDownward() {
     const lastChild = this.getChildAt(this._lastSymbolIndex) as ReelSymbol;
 
-    if (lastChild.y >= SYMBOL_SIZE * this._numSymbols) {
-      lastChild.y = -SYMBOL_SIZE;
+    if (lastChild.y >= this._symbolSize * this._numSymbols) {
+      lastChild.y = -this._symbolSize;
       lastChild.random(this._textures);
 
       if (this._lastSymbolIndex === 0) {

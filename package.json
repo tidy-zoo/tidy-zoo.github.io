@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "prettier": {
@@ -17,10 +17,10 @@
     "arrowParens": "avoid"
   },
   "devDependencies": {
+    "typescript": "^5.5.3",
     "vite": "^5.3.3"
   },
   "dependencies": {
-    "pixi.js": "8.2.2"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+    "pixi.js": "8.2.5"
+  }
 }

@@ -8,8 +8,6 @@ export interface ResultOptions {
 export default class Result extends Container {
   _headTextures: Texture[];
   _buttTextures: Texture[];
-  _head: Sprite;
-  _butt: Sprite;
 
   constructor(opt: ResultOptions) {
     super();

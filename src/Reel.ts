@@ -16,10 +16,12 @@ export default class Reel extends Container {
 
   constructor(opt: ReelOptions) {
     super();
-    this._textures = opt.textures;
     this._blur = this.filters = new BlurFilter();
+    this._speed = 0;
     this._numSymbols = opt.numSymbols;
     this._symbolSize = opt.symbolSize;
+    this._lastSymbolIndex = -1;
+    this._textures = opt.textures;
 
     for (let i = -1; i < this._numSymbols; i++) {
       const rc = new ReelSymbol();
@@ -29,7 +31,7 @@ export default class Reel extends Container {
       rc.interactive = true;
       this.addChild(rc);
 
-      const onClick = e => {
+      const onClick = (_: Event) => {
         this.emit('click_symbol', { id: rc.id });
       };
 
@@ -109,7 +111,7 @@ export default class Reel extends Container {
 }
 
 class ReelSymbol extends Sprite {
-  id: number;
+  id: number = -1;
 
   random(textures: Texture[]) {
     this.id = randInt(0, textures.length - 1);

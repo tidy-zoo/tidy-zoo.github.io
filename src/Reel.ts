@@ -25,13 +25,12 @@ export default class Reel extends Container {
 
     this._maxHeight = this.height;
 
-    // const onClick = (e: Event) => {
-    //   console.log(e.target);
-    //   this.emit('click_symbol', { id: (e.target as ReelSymbol).id });
-    // };
+    const onClick = (e: Event) => {
+      this.emit('click_symbol', { id: (e.target as ReelSymbol).id });
+    };
 
-    // this.addEventListener('click', onClick);
-    // this.addEventListener('touchend', onClick);
+    this.addEventListener('click', onClick);
+    this.addEventListener('touchend', onClick);
   }
 
   run(downward: boolean = true) {

@@ -8,112 +8,87 @@ export interface ReelOptions {
 
 export default class Reel extends Container {
   _blur: BlurFilter;
-  _speed: number;
-  _numSymbols: number;
-  _symbolSize: number;
-  _lastSymbolIndex: number;
+  _maxHeight: number;
   _textures: Texture[];
 
   constructor(opt: ReelOptions) {
     super();
     this._blur = this.filters = new BlurFilter();
-    this._speed = 0;
-    this._numSymbols = opt.numSymbols;
-    this._symbolSize = opt.symbolSize;
-    this._lastSymbolIndex = -1;
     this._textures = opt.textures;
+    this.interactive = true;
 
-    for (let i = -1; i < this._numSymbols; i++) {
-      const rc = new ReelSymbol();
-      rc.scale.x = rc.scale.y = opt.symbolSize / 400;
-      rc.y = i * opt.symbolSize;
-      rc.random(this._textures);
-      rc.interactive = true;
+    for (let i = 0; i < opt.numSymbols; i++) {
+      const rc = new ReelSymbol(this._textures);
+      rc.y = this.height;
       this.addChild(rc);
-
-      const onClick = (_: Event) => {
-        this.emit('click_symbol', { id: rc.id });
-      };
-
-      rc.addEventListener('click', onClick);
-      rc.addEventListener('touchend', onClick);
     }
+
+    this._maxHeight = this.height;
+
+    // const onClick = (e: Event) => {
+    //   console.log(e.target);
+    //   this.emit('click_symbol', { id: (e.target as ReelSymbol).id });
+    // };
+
+    // this.addEventListener('click', onClick);
+    // this.addEventListener('touchend', onClick);
   }
 
   run(downward: boolean = true) {
-    this.adjustSpeed(5);
+    let speed = 5;
 
     setInterval(() => {
-      this.adjustSpeed();
+      speed = randInt(5, 50);
     }, 3000);
 
-    if (downward) {
-      this._lastSymbolIndex = this._numSymbols;
-      Ticker.shared.add(() => this.moveDownward());
-    } else {
-      this._lastSymbolIndex = 0;
-      Ticker.shared.add(() => this.moveUpward());
-    }
-  }
-
-  adjustSpeed(speed?: number) {
-    if (speed) {
-      this._speed = speed;
-    } else {
-      this._speed = randInt(5, 20);
-    }
-
-    if (this._speed < 8) {
-      this.filters = [];
-    } else {
-      this.filters = [this._blur];
-      this._blur.blurY = Math.floor(this._speed / 5);
-    }
-  }
-
-  moveUpward() {
-    const lastChild = this.getChildAt(this._lastSymbolIndex) as ReelSymbol;
-
-    if (lastChild.y <= -this._symbolSize) {
-      lastChild.y = this._symbolSize * this._numSymbols;
-      lastChild.random(this._textures);
-
-      if (this._lastSymbolIndex === this._numSymbols) {
-        this._lastSymbolIndex = 0;
-      } else {
-        this._lastSymbolIndex = Math.max(0, this._lastSymbolIndex + 1);
+    Ticker.shared.add(() => {
+      const direction = downward ? 1 : -1;
+      for (const c of this.children) {
+        c.y += speed * direction;
       }
-    }
 
-    for (const c of this.children) {
-      c.y -= this._speed;
-    }
-  }
+      if (downward) {
+        const firstChild = this.getChildAt(0);
+        if (firstChild.y > 0) {
+          const newChild = new ReelSymbol(this._textures);
+          newChild.y = firstChild.y - newChild.height;
+          this.addChildAt(newChild, 0);
+        }
 
-  moveDownward() {
-    const lastChild = this.getChildAt(this._lastSymbolIndex) as ReelSymbol;
-
-    if (lastChild.y >= this._symbolSize * this._numSymbols) {
-      lastChild.y = -this._symbolSize;
-      lastChild.random(this._textures);
-
-      if (this._lastSymbolIndex === 0) {
-        this._lastSymbolIndex = this._numSymbols;
+        const lastChild = this.getChildAt(this.children.length - 1);
+        if (lastChild.y >= this._maxHeight) {
+          this.removeChild(lastChild);
+        }
       } else {
-        this._lastSymbolIndex = Math.max(0, this._lastSymbolIndex - 1);
-      }
-    }
+        const firstChild = this.getChildAt(0);
+        if (firstChild.y + firstChild.height < 0) {
+          this.removeChild(firstChild);
+        }
 
-    for (const c of this.children) {
-      c.y += this._speed;
-    }
+        const lastChild = this.getChildAt(this.children.length - 1);
+        if (lastChild.y + lastChild.height <= this._maxHeight) {
+          const newChild = new ReelSymbol(this._textures);
+          newChild.y = lastChild.y + lastChild.height;
+          this.addChild(newChild);
+        }
+      }
+
+      if (speed < 30) {
+        this.filters = [];
+      } else {
+        this.filters = [this._blur];
+        this._blur.blurY = Math.floor(speed / 5);
+      }
+    });
   }
 }
 
 class ReelSymbol extends Sprite {
   id: number = -1;
 
-  random(textures: Texture[]) {
+  constructor(textures: Texture[]) {
+    super();
+    this.interactive = true;
     this.id = randInt(0, textures.length - 1);
     this.texture = textures[this.id];
   }

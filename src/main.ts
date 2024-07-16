@@ -35,7 +35,7 @@ declare global {
   await app.init({ resizeTo: window });
   document.body.appendChild(app.canvas);
 
-  const numSymbols = Math.floor(app.canvas.height / symbolSize) + 2;
+  const numSymbols = Math.ceil(app.canvas.height / symbolSize);
 
   await Assets.load([
     { alias: 'bearButt', src: bearButt },
@@ -68,6 +68,7 @@ declare global {
       ]
     })
   );
+  reelLeft.scale.x = reelLeft.scale.y = 150 / reelLeft.width;
   reelLeft.x = 0;
   reelLeft.run();
 
@@ -83,46 +84,46 @@ declare global {
       ]
     })
   );
-
+  reelRight.scale.x = reelRight.scale.y = 150 / reelRight.width;
   reelRight.x = app.canvas.width - symbolSize;
   reelRight.run(false);
 
-  const result = new Result({
-    headTextures: [
-      Texture.from('bearHeadSide'),
-      Texture.from('gorillaHeadSide'),
-      Texture.from('hippoHeadSide'),
-      Texture.from('pigHeadSide')
-    ],
-    buttTextures: [
-      Texture.from('bearButtSide'),
-      Texture.from('gorillaButtSide'),
-      Texture.from('hippoButtSide'),
-      Texture.from('pigButtSide')
-    ]
-  });
-  app.stage.addChild(result);
-  result.x = app.stage.width * 0.5;
+  // const result = new Result({
+  //   headTextures: [
+  //     Texture.from('bearHeadSide'),
+  //     Texture.from('gorillaHeadSide'),
+  //     Texture.from('hippoHeadSide'),
+  //     Texture.from('pigHeadSide')
+  //   ],
+  //   buttTextures: [
+  //     Texture.from('bearButtSide'),
+  //     Texture.from('gorillaButtSide'),
+  //     Texture.from('hippoButtSide'),
+  //     Texture.from('pigButtSide')
+  //   ]
+  // });
+  // app.stage.addChild(result);
+  // result.x = app.stage.width * 0.5;
 
-  const matchResult: (number | null)[] = [null, null];
-  const updateMatchResult = (updater: (r: typeof matchResult) => void) => {
-    if (matchResult[0] !== null && matchResult[1] !== null) {
-      matchResult[0] = matchResult[1] = null;
-    }
-    updater(matchResult);
-    result.head = matchResult[0];
-    result.butt = matchResult[1];
-  };
+  // const matchResult: (number | null)[] = [null, null];
+  // const updateMatchResult = (updater: (r: typeof matchResult) => void) => {
+  //   if (matchResult[0] !== null && matchResult[1] !== null) {
+  //     matchResult[0] = matchResult[1] = null;
+  //   }
+  //   updater(matchResult);
+  //   result.head = matchResult[0];
+  //   result.butt = matchResult[1];
+  // };
 
-  reelLeft.on('click_symbol', payload => {
-    updateMatchResult(matchResult => {
-      matchResult[0] = payload.id;
-    });
-  });
+  // reelLeft.on('click_symbol', payload => {
+  //   updateMatchResult(matchResult => {
+  //     matchResult[0] = payload.id;
+  //   });
+  // });
 
-  reelRight.on('click_symbol', payload => {
-    updateMatchResult(matchResult => {
-      matchResult[1] = payload.id;
-    });
-  });
+  // reelRight.on('click_symbol', payload => {
+  //   updateMatchResult(matchResult => {
+  //     matchResult[1] = payload.id;
+  //   });
+  // });
 })();

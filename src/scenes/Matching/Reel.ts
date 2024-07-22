@@ -1,23 +1,24 @@
 import { BlurFilter, Container, Sprite, Texture, Ticker } from 'pixi.js';
 
-export interface ReelOptions {
-  numSymbols: number;
-  symbolSize: number;
-  textures: Texture[];
-}
+const NUM_SYMBOLS = 10;
 
 export default class Reel extends Container {
   _blur: BlurFilter;
   _maxHeight: number;
   _textures: Texture[];
 
-  constructor(opt: ReelOptions) {
+  constructor() {
     super();
     this._blur = this.filters = new BlurFilter();
-    this._textures = opt.textures;
+    this._textures = [
+      Texture.from('bearButt'),
+      Texture.from('gorillaButt'),
+      Texture.from('hippoButt'),
+      Texture.from('pigButt')
+    ];
     this.interactive = true;
 
-    for (let i = 0; i < opt.numSymbols; i++) {
+    for (let i = 0; i < NUM_SYMBOLS; i++) {
       const rc = new ReelSymbol(this._textures);
       rc.y = this.height;
       this.addChild(rc);
@@ -36,9 +37,13 @@ export default class Reel extends Container {
   run(downward: boolean = true) {
     let speed = 5;
 
-    setInterval(() => {
-      speed = randInt(5, 50);
+    const timer = setInterval(() => {
+      // speed = randInt(5, 50);
     }, 3000);
+
+    this.on('removed', e => {
+      clearInterval(timer);
+    });
 
     Ticker.shared.add(() => {
       const direction = downward ? 1 : -1;
@@ -82,7 +87,7 @@ export default class Reel extends Container {
   }
 }
 
-class ReelSymbol extends Sprite {
+export class ReelSymbol extends Sprite {
   id: number = -1;
 
   constructor(textures: Texture[]) {

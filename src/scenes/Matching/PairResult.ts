@@ -8,15 +8,27 @@ export default class PairResult extends Container {
     super();
     this._headTextures = [
       Texture.from('bearHeadSide'),
+      Texture.from('boarHeadSide'),
+      Texture.from('elephantHeadSide'),
+      Texture.from('giraffeHeadSide'),
       Texture.from('gorillaHeadSide'),
       Texture.from('hippoHeadSide'),
-      Texture.from('pigHeadSide')
+      Texture.from('oxHeadSide'),
+      Texture.from('pigHeadSide'),
+      Texture.from('rhinoHeadSide'),
+      Texture.from('twbearHeadSide')
     ];
     this._buttTextures = [
       Texture.from('bearButtSide'),
+      Texture.from('boarButtSide'),
+      Texture.from('elephantButtSide'),
+      Texture.from('giraffeButtSide'),
       Texture.from('gorillaButtSide'),
       Texture.from('hippoButtSide'),
-      Texture.from('pigButtSide')
+      Texture.from('oxButtSide'),
+      Texture.from('pigButtSide'),
+      Texture.from('rhinoButtSide'),
+      Texture.from('twbearButtSide')
     ];
   }
 

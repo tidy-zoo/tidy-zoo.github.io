@@ -1,7 +1,9 @@
-import { createSlice, configureStore, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, configureStore, PayloadAction, createAsyncThunk, Unsubscribe } from '@reduxjs/toolkit';
 
 interface GameState {
-  mode: 'matching' | 'result';
+  scene: 'welcome' | 'matching';
+  textureProgress: number;
+  countdowning: boolean;
   countdown: number;
   scores: { [index: string]: number };
   result: {
@@ -10,9 +12,36 @@ interface GameState {
   };
 }
 
-const initialState: GameState = {
-  mode: 'matching',
-  countdown: 60,
+export const newRound = createAsyncThunk('game/newRound', async (_, { signal, dispatch, getState }) => {
+  while (!signal.aborted) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    dispatch(gameSlice.actions.countdown());
+
+    const state = getState() as GameState;
+    if (state.countdown === 0) {
+      break;
+    }
+  }
+});
+
+export const selectSymbol = createAsyncThunk(
+  'game/selectSymbol',
+  async (arg: { left?: number; right?: number }, { dispatch, getState }) => {
+    dispatch(gameSlice.actions.checkMatch(arg));
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    const { result } = getState() as GameState;
+    if (result.left !== -1 && result.right !== -1) {
+      dispatch(gameSlice.actions.resetMatch());
+    }
+  }
+);
+
+export const initialState: GameState = {
+  scene: 'welcome',
+  textureProgress: 0,
+  countdowning: false,
+  countdown: 30,
   result: {
     left: -1,
     right: -1
@@ -24,8 +53,8 @@ const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    roundStart() {
-      return initialState;
+    updateTextureProgress(state, action) {
+      state.textureProgress = action.payload;
     },
     countdown(state) {
       state.countdown -= 1;
@@ -51,6 +80,19 @@ const gameSlice = createSlice({
     resetMatch(state) {
       state.result.left = state.result.right = -1;
     }
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(newRound.pending, () => {
+        return {
+          ...initialState,
+          countdowning: true,
+          scene: 'matching'
+        };
+      })
+      .addCase(newRound.fulfilled, state => {
+        state.countdowning = false;
+      });
   }
 });
 
@@ -58,27 +100,20 @@ export const store = configureStore({
   reducer: gameSlice.reducer
 });
 
-export const roundStart = createAsyncThunk('game/roundStart', async (arg, { signal, dispatch, getState }) => {
-  while (!signal.aborted) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    dispatch(gameSlice.actions.countdown());
+export const watchStore = (selector: (state: GameState) => any, callback: (state: GameState) => void): Unsubscribe => {
+  let prevValue: any;
 
-    const state = getState() as GameState;
-    if (state.countdown === 0) {
-      break;
+  const handleStateChange = () => {
+    const state = store.getState();
+    const value = selector(state);
+    if (value !== prevValue) {
+      callback(state);
+      prevValue = value;
     }
-  }
-});
+  };
 
-export const selectSymbol = createAsyncThunk(
-  'game/selectSymbol',
-  async (arg: { left?: number; right?: number }, { signal, dispatch, getState }) => {
-    dispatch(gameSlice.actions.checkMatch(arg));
+  handleStateChange();
+  return store.subscribe(handleStateChange);
+};
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    const { result } = getState() as GameState;
-    if (result.left !== -1 && result.right !== -1) {
-      dispatch(gameSlice.actions.resetMatch());
-    }
-  }
-);
+export const { updateTextureProgress } = gameSlice.actions;

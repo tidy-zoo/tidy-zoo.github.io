@@ -1,12 +1,11 @@
 import { Container, Sprite, Texture } from 'pixi.js';
+import { watchStore } from '../../store';
 
 export default class PairResult extends Container {
-  _headTextures: Texture[];
-  _buttTextures: Texture[];
-
   constructor() {
     super();
-    this._headTextures = [
+
+    const leftTextures = [
       Texture.from('bearHeadSide'),
       Texture.from('boarHeadSide'),
       Texture.from('elephantHeadSide'),
@@ -18,7 +17,8 @@ export default class PairResult extends Container {
       Texture.from('rhinoHeadSide'),
       Texture.from('twbearHeadSide')
     ];
-    this._buttTextures = [
+
+    const rightTextures = [
       Texture.from('bearButtSide'),
       Texture.from('boarButtSide'),
       Texture.from('elephantButtSide'),
@@ -30,35 +30,36 @@ export default class PairResult extends Container {
       Texture.from('rhinoButtSide'),
       Texture.from('twbearButtSide')
     ];
-  }
 
-  set head(n: number) {
-    const head = this.getChildByLabel('head');
-    if (head) {
-      this.removeChild(head);
-    }
+    const circle = new Sprite();
+    const left = new Sprite();
+    const right = new Sprite();
+    left.scale = right.scale = 0.55;
+    left.y = right.y = 70;
 
-    if (typeof n === 'number' && n >= 0) {
-      const t = this._headTextures[n];
-      const head = new Sprite(t);
-      head.x = -t.width;
-      head.label = 'head';
-      this.addChild(head);
-    }
-  }
+    this.addChild(circle, left, right);
 
-  set butt(n: number | null) {
-    const butt = this.getChildByLabel('butt');
-    if (butt) {
-      this.removeChild(butt);
-    }
+    watchStore(
+      state => state.result,
+      state => {
+        if (state.result.left < 0 || state.result.right < 0) {
+          circle.texture = Texture.EMPTY;
+        } else if (state.result.left === state.result.right) {
+          circle.texture = Texture.from('circleCorrect');
+        } else {
+          circle.texture = Texture.from('circleFailed');
+        }
+        circle.x = -circle.width * 0.5;
+        circle.y = -290;
 
-    if (typeof n === 'number') {
-      const t = this._buttTextures[n];
-      const butt = new Sprite(t);
-      butt.x = 0;
-      butt.label = 'butt';
-      this.addChild(butt);
-    }
+        left.texture = state.result.left < 0 ? Texture.EMPTY : leftTextures[state.result.left];
+        left.x = -left.width;
+        left.y = -left.height;
+
+        right.texture = state.result.right < 0 ? Texture.EMPTY : rightTextures[state.result.right];
+        right.x = 0;
+        right.y = -right.height;
+      }
+    );
   }
 }

@@ -6,17 +6,24 @@ import TextField from '../../components/TextField';
 export default class Welcome extends Container {
   async initialize() {
     await Assets.load([
-      { alias: 'bgWelcome', src: '/assets/bgWelcome.jpg' },
+      { alias: 'bgWelcome', src: '/assets/bgWelcome.png' },
       { alias: 'startBtn', src: '/assets/startBtn.png' }
     ]);
 
     // load game textures
     Assets.load(
       [
-        { alias: 'bgMatching', src: '/assets/bgMatching.jpg' },
-        { alias: 'timeline', src: '/assets/timeline.png' },
+        { alias: 'bgMatching', src: '/assets/bgMatching.png' },
+        { alias: 'bgRoundResult', src: '/assets/bgRoundResult.png' },
+        { alias: 'bgScore1', src: '/assets/bgScore1.png' },
+        { alias: 'bgScore2', src: '/assets/bgScore2.png' },
+        { alias: 'bgScore3', src: '/assets/bgScore3.png' },
+        { alias: 'bgTotalScore', src: '/assets/bgTotalScore.png' },
+        { alias: 'timelineBlue', src: '/assets/timelineBlue.png' },
+        { alias: 'timelineRed', src: '/assets/timelineRed.png' },
         { alias: 'replayBtn', src: '/assets/replayBtn.png' },
-        { alias: 'quitBtn', src: '/assets/quitBtn.png' },
+        { alias: 'circleFailed', src: '/assets/circleFailed.png' },
+        { alias: 'circleCorrect', src: '/assets/circleCorrect.png' },
 
         // symbols
         { alias: 'bearButt', src: '/assets/bear/butt.png' },
@@ -74,11 +81,12 @@ export default class Welcome extends Container {
       }
     );
 
-    this.addChild(new Sprite(Texture.from('bgWelcome')));
+    const bg = new Sprite(Texture.from('bgWelcome'));
 
     const startBtn = new Button(Texture.from('startBtn'));
-    startBtn.x = this.width * 0.5;
-    startBtn.y = this.height - 100;
+    startBtn.x = bg.width * 0.5;
+    startBtn.y = bg.height - 100;
+    startBtn.visible = false;
 
     startBtn.on('transition_end', () => {
       store.dispatch(newRound());
@@ -92,19 +100,20 @@ export default class Welcome extends Container {
     );
 
     const progressText = new TextField('');
-    progressText.x = this.width * 0.5 - progressText.width * 0.5;
-    progressText.y = this.height - 500;
-    this.addChild(progressText);
+    progressText.y = 330;
+
+    this.addChild(bg, progressText, startBtn);
 
     watchStore(
       state => state.textureProgress,
       state => {
         const progress = Math.ceil(state.textureProgress * 100);
         progressText.text = `${progress}%`;
+        progressText.x = bg.width * 0.5 - progressText.width * 0.5;
 
         if (progress === 100) {
-          this.removeChild(progressText);
-          this.addChild(startBtn);
+          progressText.visible = false;
+          startBtn.visible = true;
         }
       }
     );

@@ -26,19 +26,18 @@ export default class ScoreBoard extends Container {
       const score = new Container();
       const col = index % numCol;
       const row = Math.floor(index / 5);
-      score.x = col * 600;
-      score.y = row * 300;
+      score.x = col * 120;
+      score.y = row * 60;
       this.addChild(score);
 
       const icon = new Sprite(t);
-      icon.scale.x = icon.scale.y = 0.6;
+      icon.scale.x = icon.scale.y = 0.1;
       icon.y = maxHeight * icon.scale.y - icon.height;
 
       const scoreText = new TextField('', {
-        fontSize: 120,
         fill: 0x6a6a6b
       });
-      scoreText.x = icon.width + 30;
+      scoreText.x = icon.width + 5;
       scoreText.y = icon.y + icon.height - scoreText.height;
 
       score.addChild(icon, scoreText);
@@ -46,7 +45,7 @@ export default class ScoreBoard extends Container {
       return scoreText;
     });
 
-    watchStore(
+    const unlisten = watchStore(
       state => state.scores,
       state => {
         scoreTexts.forEach((tf, id) => {
@@ -54,5 +53,7 @@ export default class ScoreBoard extends Container {
         });
       }
     );
+
+    this.on('removed', unlisten);
   }
 }

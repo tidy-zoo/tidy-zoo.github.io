@@ -1,7 +1,7 @@
 import { Container, Sprite, Texture, Ticker } from 'pixi.js';
 import { selectSymbol, store } from '../../store';
 
-const NUM_SYMBOLS = 10;
+const NUM_SYMBOLS = 6;
 const INITIAL_SPEED = 5;
 
 export default class Reel extends Container {

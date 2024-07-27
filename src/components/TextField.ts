@@ -6,7 +6,6 @@ export default class extends Text {
       text,
       style: new TextStyle({
         fontFamily: 'Varela Round',
-        fontSize: 200,
         fill: '#fff',
         fontWeight: 'bold',
         ...style

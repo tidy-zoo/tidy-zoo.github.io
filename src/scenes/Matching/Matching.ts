@@ -3,7 +3,6 @@ import Reel from './Reel';
 import PairResult from './PairResult';
 import Timeline from './Timeline';
 import { watchStore } from '../../store';
-import ScoreBoard from './ScoreBoard';
 import RoundResult from './RoundResult';
 
 export default class Matching extends Container {
@@ -14,11 +13,9 @@ export default class Matching extends Container {
     this.addChild(bg);
 
     // reel left
-    const maskLeft = new Graphics().rect(0, 0, 293, 761).fill(0xff0000);
-    maskLeft.alpha = 0.2;
-    maskLeft.x = 49;
-    maskLeft.y = 49;
-    this.addChild(maskLeft);
+    const bgLeft = new Sprite(Texture.from('reel'));
+    const maskLeft = new Sprite(Texture.from('reel'));
+    this.addChild(bgLeft, maskLeft);
 
     const reelLeft = new Reel([
       Texture.from('bearHead'),
@@ -64,21 +61,14 @@ export default class Matching extends Container {
     // result
     const pairResult = new PairResult();
     pairResult.x = bg.width * 0.5;
-    pairResult.y = 608;
+    pairResult.y = 50;
     this.addChild(pairResult);
 
     // timeline
     const timeline = new Timeline();
-    timeline.pivot.set(timeline.width * 0.5, 0);
     timeline.x = bg.width * 0.5;
     timeline.y = 733;
     this.addChild(timeline);
-
-    // scores
-    const scores = new ScoreBoard();
-    scores.x = this.width * 0.5 - scores.width * 0.5;
-    scores.y = 170;
-    this.addChild(scores);
 
     // round result
     const roundResult = new RoundResult(this.width, this.height);
@@ -89,12 +79,10 @@ export default class Matching extends Container {
       state => state.countdowning,
       state => {
         if (state.countdowning) {
-          scores.visible = true;
           roundResult.visible = false;
           reelLeft.run();
           reelRight.run();
         } else {
-          scores.visible = false;
           roundResult.visible = true;
           reelLeft.stop();
           reelRight.stop();

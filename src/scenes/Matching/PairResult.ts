@@ -31,34 +31,43 @@ export default class PairResult extends Container {
       Texture.from('twbearButtSide')
     ];
 
-    const circle = new Sprite();
+    const cloud = new Sprite(Texture.from('cloud'));
+    const cloudFailed = new Sprite(Texture.from('cloudFailed'));
+    const rainbow = new Sprite(Texture.from('rainbow'));
+    cloud.x = -cloud.width * 0.5;
+    cloudFailed.x = -cloudFailed.width * 0.5;
+    rainbow.x = -rainbow.width * 0.5;
+    rainbow.y = 265;
+    this.addChild(cloud, cloudFailed, rainbow);
+
     const left = new Sprite();
     const right = new Sprite();
-    left.scale = right.scale = 0.55;
-    left.y = right.y = 70;
-
-    this.addChild(circle, left, right);
+    this.addChild(left, right);
 
     watchStore(
       state => state.result,
       state => {
         if (state.result.left < 0 || state.result.right < 0) {
-          circle.texture = Texture.EMPTY;
+          cloud.visible = true;
+          cloudFailed.visible = false;
+          rainbow.visible = false;
         } else if (state.result.left === state.result.right) {
-          circle.texture = Texture.from('circleCorrect');
+          cloud.visible = true;
+          cloudFailed.visible = false;
+          rainbow.visible = true;
         } else {
-          circle.texture = Texture.from('circleFailed');
+          cloud.visible = false;
+          cloudFailed.visible = true;
+          rainbow.visible = false;
         }
-        circle.x = -circle.width * 0.5;
-        circle.y = -290;
 
         left.texture = state.result.left < 0 ? Texture.EMPTY : leftTextures[state.result.left];
-        left.x = -left.width;
-        left.y = -left.height;
-
         right.texture = state.result.right < 0 ? Texture.EMPTY : rightTextures[state.result.right];
-        right.x = 0;
-        right.y = -right.height;
+        left.scale = right.scale = 0.65;
+        left.pivot.set(left.width / 0.65, left.height / 0.65);
+        right.pivot.set(0, right.height / 0.65);
+        left.x = right.x = 0;
+        left.y = right.y = 615;
       }
     );
   }

@@ -1,19 +1,23 @@
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { initialState, watchStore } from '../../store';
-import TextField from '../../components/TextField';
 
 export default class Timeline extends Container {
   constructor() {
     super();
 
+    const bg = new Sprite(Texture.from('timeline'));
+    bg.x = bg.width * -0.5;
+    bg.y = bg.height * -0.5;
+
     const timeline = new Sprite(Texture.from('timelineBlue'));
+    timeline.pivot.set(timeline.width * 0.5, timeline.height * 0.5);
+    timeline.x = timeline.y = 0;
+
     const mask = new Graphics().rect(0, 0, timeline.width, timeline.height).fill(0xff0000);
-    const remainText = new TextField('00:00', {
-      fill: 0x6a6a6b
-    });
-    this.addChild(mask, timeline, remainText);
+    mask.x = timeline.x - timeline.width * 0.5;
+    mask.y = timeline.y - timeline.height * 0.5;
+    this.addChild(bg, timeline, mask);
     timeline.mask = mask;
-    remainText.x = this.width * 0.5 - remainText.width * 0.5;
 
     watchStore(
       state => state.countdown,
@@ -25,14 +29,6 @@ export default class Timeline extends Container {
         } else {
           timeline.texture = Texture.from('timelineBlue');
         }
-
-        let minutes = Math.floor(state.countdown / 60).toString();
-        minutes = minutes.length < 2 ? `0${minutes}` : minutes;
-
-        let seconds = (state.countdown % 60).toString();
-        seconds = seconds.length < 2 ? `0${seconds}` : seconds;
-
-        remainText.text = `${minutes}:${seconds}`;
       }
     );
   }

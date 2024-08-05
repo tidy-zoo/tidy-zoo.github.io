@@ -6,24 +6,27 @@ import TextField from '../../components/TextField';
 export default class Welcome extends Container {
   async initialize() {
     await Assets.load([
-      { alias: 'bgWelcome', src: '/assets/bgWelcome.png' },
+      { alias: 'bgWelcome', src: '/assets/bgWelcome.jpg' },
       { alias: 'startBtn', src: '/assets/startBtn.png' }
     ]);
 
     // load game textures
     Assets.load(
       [
-        { alias: 'bgMatching', src: '/assets/bgMatching.png' },
+        { alias: 'bgMatching', src: '/assets/bgMatching.jpg' },
         { alias: 'bgRoundResult', src: '/assets/bgRoundResult.png' },
         { alias: 'bgScore1', src: '/assets/bgScore1.png' },
         { alias: 'bgScore2', src: '/assets/bgScore2.png' },
         { alias: 'bgScore3', src: '/assets/bgScore3.png' },
         { alias: 'bgTotalScore', src: '/assets/bgTotalScore.png' },
+        { alias: 'timeline', src: '/assets/timeline.png' },
         { alias: 'timelineBlue', src: '/assets/timelineBlue.png' },
         { alias: 'timelineRed', src: '/assets/timelineRed.png' },
         { alias: 'replayBtn', src: '/assets/replayBtn.png' },
-        { alias: 'circleFailed', src: '/assets/circleFailed.png' },
-        { alias: 'circleCorrect', src: '/assets/circleCorrect.png' },
+        { alias: 'cloudFailed', src: '/assets/cloudFailed.png' },
+        { alias: 'cloud', src: '/assets/cloud.png' },
+        { alias: 'rainbow', src: '/assets/rainbow.png' },
+        { alias: 'reel', src: '/assets/reel.png' },
 
         // symbols
         { alias: 'bearButt', src: '/assets/bear/butt.png' },
@@ -84,8 +87,8 @@ export default class Welcome extends Container {
     const bg = new Sprite(Texture.from('bgWelcome'));
 
     const startBtn = new Button(Texture.from('startBtn'));
-    startBtn.x = bg.width * 0.5;
-    startBtn.y = bg.height - 100;
+    startBtn.x = 240;
+    startBtn.y = 740;
     startBtn.visible = false;
 
     startBtn.on('transition_end', () => {

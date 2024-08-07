@@ -15,6 +15,7 @@ export default class Welcome extends Container {
       [
         { alias: 'bgMatching', src: '/assets/bgMatching.jpg' },
         { alias: 'bgRoundResult', src: '/assets/bgRoundResult.png' },
+        { alias: 'bgScores', src: '/assets/bgScores.jpg' },
         { alias: 'bgScore1', src: '/assets/bgScore1.png' },
         { alias: 'bgScore2', src: '/assets/bgScore2.png' },
         { alias: 'bgScore3', src: '/assets/bgScore3.png' },
@@ -27,6 +28,10 @@ export default class Welcome extends Container {
         { alias: 'cloud', src: '/assets/cloud.png' },
         { alias: 'rainbow', src: '/assets/rainbow.png' },
         { alias: 'reel', src: '/assets/reel.png' },
+        { alias: 'totalSum', src: '/assets/totalSum.png' },
+        { alias: 'totalSumLv1', src: '/assets/totalSumLv1.png' },
+        { alias: 'totalSumLv2', src: '/assets/totalSumLv2.png' },
+        { alias: 'totalSumLv3', src: '/assets/totalSumLv3.png' },
 
         // symbols
         { alias: 'bearButt', src: '/assets/bear/butt.png' },

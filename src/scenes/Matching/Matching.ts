@@ -3,7 +3,6 @@ import Reel from './Reel';
 import PairResult from './PairResult';
 import Timeline from './Timeline';
 import { watchStore } from '../../store';
-import RoundResult from './RoundResult';
 
 export default class Matching extends Container {
   constructor() {
@@ -12,10 +11,19 @@ export default class Matching extends Container {
     const bg = new Sprite(Texture.from('bgMatching'));
     this.addChild(bg);
 
-    // reel left
+    // mask left
     const bgLeft = new Sprite(Texture.from('reel'));
     const maskLeft = new Sprite(Texture.from('reel'));
+    bgLeft.x = maskLeft.x = 60;
+    bgLeft.y = maskLeft.y = 35;
     this.addChild(bgLeft, maskLeft);
+
+    // mask right
+    const bgRight = new Sprite(Texture.from('reel'));
+    const maskRight = new Sprite(Texture.from('reel'));
+    bgRight.x = maskRight.x = bg.width - bgLeft.width - 60;
+    bgRight.y = maskRight.y = 35;
+    this.addChild(bgRight, maskRight);
 
     const reelLeft = new Reel([
       Texture.from('bearHead'),
@@ -30,16 +38,10 @@ export default class Matching extends Container {
       Texture.from('twbearHead')
     ]);
     reelLeft.asLeft = true;
-    reelLeft.x = 105;
-    reelLeft.scale = 0.45;
+    reelLeft.x = 90;
+    reelLeft.scale = 0.6;
     reelLeft.mask = maskLeft;
     this.addChild(reelLeft);
-
-    // reel right
-    const maskRight = new Graphics().rect(0, 0, 293, 761).fill(0xff0000);
-    maskRight.x = this.width - 342;
-    maskRight.y = 49;
-    this.addChild(maskRight);
 
     const reelRight = new Reel([
       Texture.from('bearButt'),
@@ -53,8 +55,8 @@ export default class Matching extends Container {
       Texture.from('rhinoButt'),
       Texture.from('twbearBbutt')
     ]);
-    reelRight.x = 1585;
-    reelRight.scale = 0.45;
+    reelRight.x = 1540;
+    reelRight.scale = 0.6;
     reelRight.mask = maskRight;
     this.addChild(reelRight);
 
@@ -70,23 +72,24 @@ export default class Matching extends Container {
     timeline.y = 733;
     this.addChild(timeline);
 
-    // round result
-    const roundResult = new RoundResult(this.width, this.height);
-    this.addChild(roundResult);
-
-    this.addChild(roundResult);
     watchStore(
       state => state.countdowning,
       state => {
         if (state.countdowning) {
-          roundResult.visible = false;
           reelLeft.run();
           reelRight.run();
         } else {
-          roundResult.visible = true;
           reelLeft.stop();
           reelRight.stop();
         }
+      }
+    );
+
+    watchStore(
+      state => state.scores,
+      state => {
+        const roundScore = Object.values(state.scores).reduce((sum, score) => sum + score, 0);
+        console.log(roundScore);
       }
     );
   }

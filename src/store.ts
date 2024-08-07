@@ -1,7 +1,7 @@
 import { createSlice, configureStore, PayloadAction, createAsyncThunk, Unsubscribe } from '@reduxjs/toolkit';
 
 interface GameState {
-  scene: 'welcome' | 'matching';
+  scene: 'welcome' | 'matching' | 'scores';
   textureProgress: number;
   countdowning: boolean;
   countdown: number;
@@ -92,6 +92,7 @@ const gameSlice = createSlice({
       })
       .addCase(newRound.fulfilled, state => {
         state.countdowning = false;
+        state.scene = 'scores';
       });
   }
 });

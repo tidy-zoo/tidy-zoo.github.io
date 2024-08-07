@@ -26,12 +26,12 @@ export default class ScoreBoard extends Container {
       const score = new Container();
       const col = index % numCol;
       const row = Math.floor(index / 5);
-      score.x = col * 120;
-      score.y = row * 60;
+      score.x = col * 200;
+      score.y = row * 150;
       this.addChild(score);
 
       const icon = new Sprite(t);
-      icon.scale.x = icon.scale.y = 0.1;
+      icon.scale = 0.2;
       icon.y = maxHeight * icon.scale.y - icon.height;
 
       const scoreText = new TextField('', {

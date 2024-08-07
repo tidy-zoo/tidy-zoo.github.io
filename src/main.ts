@@ -1,6 +1,7 @@
 import { Application } from 'pixi.js';
 import Welcome from './scenes/Welcome';
 import Matching from './scenes/Matching';
+import Scores from './scenes/Scores';
 import { watchStore } from './store';
 
 declare global {
@@ -31,13 +32,33 @@ declare global {
   welcome.scale.x = welcome.scale.y = width / welcome.width;
   app.stage.addChild(welcome);
 
+  let matching: Matching;
+  let scores: Scores;
+  let isInitialized = false;
+
   watchStore(
     state => state.scene,
     state => {
-      if (state.scene === 'matching') {
-        const matching = new Matching();
-        matching.scale.x = matching.scale.y = width / matching.width;
-        app.stage.addChild(matching);
+      switch (state.scene) {
+        case 'matching':
+          if (!isInitialized) {
+            isInitialized = true;
+
+            matching = new Matching();
+            matching.scale.x = matching.scale.y = width / matching.width;
+
+            scores = new Scores();
+            scores.scale.x = scores.scale.y = width / scores.width;
+          }
+
+          app.stage.addChild(matching);
+          app.stage.removeChild(scores);
+          break;
+
+        case 'scores':
+          app.stage.removeChild(matching);
+          app.stage.addChild(scores);
+          break;
       }
     }
   );

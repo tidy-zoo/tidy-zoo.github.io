@@ -1,4 +1,4 @@
-import { Assets, Container, Sprite, Texture } from 'pixi.js';
+import { Container, Sprite, Texture } from 'pixi.js';
 import Button from '../../components/Button';
 import ScoreBoard from './ScoreBoard';
 import { newRound, store } from '../../store';

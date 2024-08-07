@@ -1,4 +1,4 @@
-import { Container, Graphics, Sprite, Texture } from 'pixi.js';
+import { Container, Sprite, Texture } from 'pixi.js';
 import Reel from './Reel';
 import PairResult from './PairResult';
 import Timeline from './Timeline';

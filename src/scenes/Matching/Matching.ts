@@ -3,6 +3,7 @@ import Reel from './Reel';
 import PairResult from './PairResult';
 import Timeline from './Timeline';
 import { watchStore } from '../../store';
+import TextField from '../../components/TextField';
 
 export default class Matching extends Container {
   constructor() {
@@ -85,11 +86,19 @@ export default class Matching extends Container {
       }
     );
 
+    // round scores
+    const scoreText = new TextField('', {
+      fontSize: 65
+    });
+    scoreText.y = 85;
+    this.addChild(scoreText);
+
     watchStore(
       state => state.scores,
       state => {
         const roundScore = Object.values(state.scores).reduce((sum, score) => sum + score, 0);
-        console.log(roundScore);
+        scoreText.text = roundScore;
+        scoreText.x = bg.width * 0.5 - scoreText.width * 0.5;
       }
     );
   }

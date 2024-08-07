@@ -107,17 +107,19 @@ export default class Welcome extends Container {
       }
     );
 
-    const progressText = new TextField('');
-    progressText.y = 330;
+    const progressText = new TextField('', {
+      fontSize: 65
+    });
+    progressText.y = 680;
 
-    this.addChild(bg, progressText, startBtn);
+    this.addChild(bg, startBtn, progressText);
 
     watchStore(
       state => state.textureProgress,
       state => {
         const progress = Math.ceil(state.textureProgress * 100);
         progressText.text = `${progress}%`;
-        progressText.x = bg.width * 0.5 - progressText.width * 0.5;
+        progressText.x = startBtn.x - progressText.width * 0.5;
 
         if (progress === 100) {
           progressText.visible = false;

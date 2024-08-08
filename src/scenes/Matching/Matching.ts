@@ -74,6 +74,14 @@ export default class Matching extends Container {
     this.addChild(timeline);
 
     watchStore(
+      state => state.result,
+      state => {
+        const isBothSideSelected = state.result.left >= 0 && state.result.right >= 0;
+        reelLeft.interactive = reelRight.interactive = !isBothSideSelected;
+      }
+    );
+
+    watchStore(
       state => state.countdowning,
       state => {
         if (state.countdowning) {
@@ -88,16 +96,15 @@ export default class Matching extends Container {
 
     // round scores
     const scoreText = new TextField('', {
-      fontSize: 65
+      fontSize: 60
     });
-    scoreText.y = 85;
+    scoreText.y = 95;
     this.addChild(scoreText);
 
     watchStore(
-      state => state.scores,
+      state => state.roundScore,
       state => {
-        const roundScore = Object.values(state.scores).reduce((sum, score) => sum + score, 0);
-        scoreText.text = roundScore;
+        scoreText.text = state.roundScore;
         scoreText.x = bg.width * 0.5 - scoreText.width * 0.5;
       }
     );

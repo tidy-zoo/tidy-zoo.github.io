@@ -1,8 +1,9 @@
 import { Container, Sprite, Texture } from 'pixi.js';
-import { watchStore } from '../../store';
 import TextField from '../../components/TextField';
 
 export default class ScoreBoard extends Container {
+  _scoreTexts: TextField[];
+
   constructor() {
     super();
 
@@ -22,7 +23,7 @@ export default class ScoreBoard extends Container {
 
     const numCol = 5;
 
-    const scoreTexts = textures.map((t, index) => {
+    this._scoreTexts = textures.map((t, index) => {
       const score = new Container();
       const col = index % numCol;
       const row = Math.floor(index / 5);
@@ -44,16 +45,11 @@ export default class ScoreBoard extends Container {
 
       return scoreText;
     });
+  }
 
-    const unlisten = watchStore(
-      state => state.scores,
-      state => {
-        scoreTexts.forEach((tf, id) => {
-          tf.text = `x${state.scores[id] ?? 0}`;
-        });
-      }
-    );
-
-    this.on('removed', unlisten);
+  set scores(val: { [index: string]: number }) {
+    this._scoreTexts.forEach((tf, id) => {
+      tf.text = `x${val[id] ?? 0}`;
+    });
   }
 }

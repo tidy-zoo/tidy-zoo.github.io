@@ -108,9 +108,9 @@ export default class Welcome extends Container {
     );
 
     const progressText = new TextField('', {
-      fontSize: 65
+      fontSize: 50
     });
-    progressText.y = 680;
+    progressText.y = 720;
 
     this.addChild(bg, startBtn, progressText);
 

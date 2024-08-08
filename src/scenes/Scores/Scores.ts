@@ -93,6 +93,7 @@ export default class Scores extends Container {
     const totalSumLv3 = new Sprite(Texture.from('totalSumLv3'));
     totalSumLv1.x = totalSumLv2.x = totalSumLv3.x = 370;
     totalSumLv1.y = totalSumLv2.y = totalSumLv3.y = 565;
+    totalSumLv1.visible = totalSumLv2.visible = totalSumLv3.visible = false;
 
     const historySumTextField = new TextField('199', { fill: '#313131', fontSize: 50 });
     historySumTextField.x = 970;
@@ -106,6 +107,17 @@ export default class Scores extends Container {
         const sum = Object.values(state.historyScores).reduce((sum, n) => sum + n, 0);
         historySumTextField.text = sum;
         historySumTextField.x = totalSum.x * 0.5 - historySumTextField.width * 0.5 + 565;
+
+        if (sum > 150) {
+          totalSumLv1.visible = true;
+          totalSumLv2.visible = totalSumLv3.visible = false;
+        } else if (sum >= 50) {
+          totalSumLv2.visible = true;
+          totalSumLv1.visible = totalSumLv3.visible = false;
+        } else {
+          totalSumLv3.visible = true;
+          totalSumLv1.visible = totalSumLv2.visible = false;
+        }
       }
     );
   }

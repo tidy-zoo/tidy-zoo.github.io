@@ -6,8 +6,8 @@ export default class Timeline extends Container {
     super();
 
     const bg = new Sprite(Texture.from('timeline'));
-    bg.x = bg.width * -0.5;
-    bg.y = bg.height * -0.5;
+    bg.x = bg.width * -0.5 + 1;
+    bg.y = bg.height * -0.5 + 2;
 
     const timeline = new Sprite(Texture.from('timelineBlue'));
     timeline.pivot.set(timeline.width * 0.5, timeline.height * 0.5);

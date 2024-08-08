@@ -25,11 +25,12 @@ declare global {
   });
   document.body.appendChild(app.canvas);
 
-  const { width } = app.canvas.getBoundingClientRect();
+  const { width, height } = app.canvas.getBoundingClientRect();
 
   const welcome = new Welcome();
   await welcome.initialize();
-  welcome.scale.x = welcome.scale.y = width / welcome.width;
+  welcome.scale = width / welcome.width;
+  welcome.y = height * 0.5 - welcome.height * 0.5;
   app.stage.addChild(welcome);
 
   let matching: Matching;
@@ -45,10 +46,12 @@ declare global {
             isInitialized = true;
 
             matching = new Matching();
-            matching.scale.x = matching.scale.y = width / matching.width;
+            matching.scale = width / matching.width;
+            matching.y = height * 0.5 - matching.height * 0.5;
 
             scores = new Scores();
-            scores.scale.x = scores.scale.y = width / scores.width;
+            scores.scale = width / scores.width;
+            scores.y = height * 0.5 - scores.height * 0.5;
           }
 
           app.stage.addChild(matching);

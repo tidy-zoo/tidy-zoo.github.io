@@ -121,7 +121,7 @@ const gameSlice = createSlice({
           scene: 'matching'
         };
       })
-      .addCase(selectSymbol.fulfilled, (state, action) => {
+      .addCase(selectSymbol.fulfilled, state => {
         if (state.result.left >= 0 && state.result.right >= 0) {
           state.result.left = state.result.right = -1;
         }

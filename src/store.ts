@@ -5,7 +5,6 @@ interface GameState {
   textureProgress: number;
   countdowning: boolean;
   countdown: number;
-  scores: { [index: string]: number };
   roundScore: 0;
   historyScores: { [index: string]: number };
   historyRoundScores: number[];
@@ -24,32 +23,40 @@ const writeLocalStorage = (key: string, val: any) => {
   localStorage.setItem(key, JSON.stringify(val));
 };
 
-export const newRound = createAsyncThunk('game/newRound', async (_, { signal, dispatch, getState }) => {
-  while (!signal.aborted) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    dispatch(gameSlice.actions.countdown());
+export const newRound = createAsyncThunk(
+  'game/newRound',
+  async (_, { signal, dispatch, getState }) => {
+    while (!signal.aborted) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      dispatch(gameSlice.actions.countdown());
 
-    const state = getState() as GameState;
-    if (state.countdown === 0) {
-      break;
+      const state = getState() as GameState;
+      if (state.countdown === 0) {
+        break;
+      }
+    }
+    dispatch(gameSlice.actions.summarize());
+
+    const { historyRoundScores, historyScores } = getState() as GameState;
+    writeLocalStorage('historyRoundScores', historyRoundScores);
+    writeLocalStorage('historyScores', historyScores);
+  },
+  {
+    condition: (_, { getState }) => {
+      const { scene } = getState() as GameState;
+      return scene === 'scores' || scene === 'welcome';
     }
   }
-  dispatch(gameSlice.actions.summarize());
-
-  const { historyRoundScores, historyScores } = getState() as GameState;
-  writeLocalStorage('historyRoundScores', historyRoundScores);
-  writeLocalStorage('historyScores', historyScores);
-});
+);
 
 export const selectSymbol = createAsyncThunk(
   'game/selectSymbol',
   async (arg: { left?: number; right?: number }, { dispatch, getState }) => {
     dispatch(gameSlice.actions.checkMatch(arg));
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
     const { result } = getState() as GameState;
     if (result.left !== -1 && result.right !== -1) {
-      dispatch(gameSlice.actions.resetMatch());
+      await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
 );
@@ -58,12 +65,11 @@ export const initialState: GameState = {
   scene: 'welcome',
   textureProgress: 0,
   countdowning: false,
-  countdown: 45,
+  countdown: import.meta.env.VITE_APP_COUNTING_DOWN,
   result: {
     left: -1,
     right: -1
   },
-  scores: {},
   roundScore: 0,
   historyScores: readLocalStorage('historyScores') ?? {},
   historyRoundScores: readLocalStorage('historyRoundScores') ?? []
@@ -83,27 +89,16 @@ const gameSlice = createSlice({
       if (typeof action.payload.left === 'number') {
         state.result.left = action.payload.left;
       }
-
       if (typeof action.payload.right === 'number') {
         state.result.right = action.payload.right;
       }
-
       if (state.result.left === state.result.right && state.result.left >= 0) {
-        const currentScore = state.scores[state.result.left];
-        if (typeof currentScore === 'number') {
-          state.scores[state.result.left] = currentScore + 1;
-        } else {
-          state.scores[state.result.left] = 1;
-        }
-
-        const currentHistoryScore = state.historyScores[state.result.left];
-        if (typeof currentHistoryScore === 'number') {
-          state.historyScores[state.result.left] = currentHistoryScore + 1;
+        state.roundScore += 1;
+        if (state.historyScores.hasOwnProperty(state.result.left)) {
+          state.historyScores[state.result.left] += 1;
         } else {
           state.historyScores[state.result.left] = 1;
         }
-
-        state.roundScore += 1;
       }
     },
     resetMatch(state) {
@@ -111,20 +106,25 @@ const gameSlice = createSlice({
     },
     summarize(state) {
       state.countdowning = false;
-      const historyRoundScores = state.historyRoundScores.slice();
-      historyRoundScores.push(state.roundScore);
-      historyRoundScores.sort((n1, n2) => n2 - n1);
-      state.historyRoundScores = historyRoundScores.slice(0, 3);
+      state.historyRoundScores = [...state.historyRoundScores, state.roundScore].sort((n1, n2) => n2 - n1).slice(0, 3);
     }
   },
   extraReducers(builder) {
     builder
-      .addCase(newRound.pending, () => {
+      .addCase(newRound.pending, state => {
         return {
           ...initialState,
+          textureProgress: state.textureProgress,
+          historyRoundScores: state.historyRoundScores,
+          historyScores: state.historyScores,
           countdowning: true,
           scene: 'matching'
         };
+      })
+      .addCase(selectSymbol.fulfilled, (state, action) => {
+        if (state.result.left >= 0 && state.result.right >= 0) {
+          state.result.left = state.result.right = -1;
+        }
       })
       .addCase(newRound.fulfilled, state => {
         state.scene = 'scores';

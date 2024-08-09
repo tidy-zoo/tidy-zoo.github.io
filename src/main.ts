@@ -25,17 +25,43 @@ declare global {
   });
   document.body.appendChild(app.canvas);
 
-  const { width, height } = app.canvas.getBoundingClientRect();
-
   const welcome = new Welcome();
   await welcome.initialize();
-  welcome.scale = width / welcome.width;
-  welcome.y = height * 0.5 - welcome.height * 0.5;
   app.stage.addChild(welcome);
+
+  const originWidth = welcome.width;
+  const originalHeight = welcome.height;
 
   let matching: Matching;
   let scores: Scores;
   let isInitialized = false;
+
+  const resizeScenes = () => {
+    const { width, height } = app.canvas.getBoundingClientRect();
+    const scale = width / originWidth;
+
+    welcome.scale = scale;
+    welcome.y = height * 0.5 - welcome.height * 0.5;
+
+    console.log({
+      height,
+      'welcome.height': welcome.height,
+      originalHeight
+    });
+
+    if (matching) {
+      matching.scale = scale;
+      matching.y = height * 0.5 - matching.height * 0.5;
+    }
+
+    if (scores) {
+      scores.scale = scale;
+      scores.y = height * 0.5 - scores.height * 0.5;
+    }
+  };
+
+  resizeScenes();
+  new ResizeObserver(resizeScenes).observe(app.canvas);
 
   watchStore(
     state => state.scene,
@@ -44,14 +70,9 @@ declare global {
         case 'matching':
           if (!isInitialized) {
             isInitialized = true;
-
             matching = new Matching();
-            matching.scale = width / matching.width;
-            matching.y = height * 0.5 - matching.height * 0.5;
-
             scores = new Scores();
-            scores.scale = width / scores.width;
-            scores.y = height * 0.5 - scores.height * 0.5;
+            resizeScenes();
           }
 
           app.stage.addChild(matching);

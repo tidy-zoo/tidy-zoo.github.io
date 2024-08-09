@@ -1,5 +1,6 @@
 import { Container, Sprite, Texture, Ticker } from 'pixi.js';
 import { selectSymbol, store } from '../../store';
+import gsap from 'gsap';
 
 const NUM_SYMBOLS = 6;
 const INITIAL_SPEED = 5;
@@ -8,7 +9,7 @@ export default class Reel extends Container {
   _maxHeight: number;
   _textures: Texture[];
   _speed: number = INITIAL_SPEED;
-  _timer: number = 0;
+  _tween: gsap.core.Tween | null = null;
   asLeft: boolean = false;
 
   constructor(textures: Texture[]) {
@@ -35,15 +36,19 @@ export default class Reel extends Container {
   }
 
   run() {
-    this._timer = setInterval(() => {
-      this._speed += 3;
-    }, 3000);
+    this._tween?.kill();
+    this._tween = gsap.to(this, {
+      duration: import.meta.env.VITE_APP_COUNTING_DOWN,
+      ease: 'power3.in',
+      _speed: INITIAL_SPEED + 30
+    });
+
     Ticker.shared.add(this._onTick);
   }
 
   stop() {
     this._speed = INITIAL_SPEED;
-    clearInterval(this._timer);
+    this._tween?.kill();
     Ticker.shared.remove(this._onTick);
   }
 

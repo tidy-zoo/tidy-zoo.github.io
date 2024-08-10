@@ -56,7 +56,7 @@ export const selectSymbol = createAsyncThunk(
 
     const { result } = getState() as GameState;
     if (result.left !== -1 && result.right !== -1) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, import.meta.env.VITE_APP_MATCH_RESULT_TIMEOUT * 1000));
     }
   }
 );

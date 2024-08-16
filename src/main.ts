@@ -30,7 +30,6 @@ declare global {
   app.stage.addChild(welcome);
 
   const originWidth = welcome.width;
-  const originalHeight = welcome.height;
 
   let matching: Matching;
   let scores: Scores;

@@ -43,12 +43,6 @@ declare global {
     welcome.scale = scale;
     welcome.y = height * 0.5 - welcome.height * 0.5;
 
-    console.log({
-      height,
-      'welcome.height': welcome.height,
-      originalHeight
-    });
-
     if (matching) {
       matching.scale = scale;
       matching.y = height * 0.5 - matching.height * 0.5;

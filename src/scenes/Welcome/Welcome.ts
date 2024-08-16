@@ -2,6 +2,7 @@ import { Assets, Container, Sprite, Texture } from 'pixi.js';
 import { newRound, store, updateTextureProgress, watchStore } from '../../store';
 import Button from '../../components/Button';
 import TextField from '../../components/TextField';
+import { sound } from '@pixi/sound';
 
 export default class Welcome extends Container {
   async initialize() {
@@ -82,7 +83,13 @@ export default class Welcome extends Container {
         { alias: 'twbearBbutt', src: '/assets/twbear/butt.png' },
         { alias: 'twbearButtSide', src: '/assets/twbear/buttSide.png' },
         { alias: 'twbearHead', src: '/assets/twbear/head.png' },
-        { alias: 'twbearHeadSide', src: '/assets/twbear/headSide.png' }
+        { alias: 'twbearHeadSide', src: '/assets/twbear/headSide.png' },
+
+        { alias: 'bgm', src: '/sound/bgm.mp3' },
+        { alias: 'startBtnSound', src: '/sound/startBtnSound.mp3' },
+        { alias: 'correctSound', src: '/sound/correctSound.mp3' },
+        { alias: 'faultSound', src: '/sound/faultSound.mp3' },
+        { alias: 'resultSound', src: '/sound/resultSound.mp3' }
       ],
       progress => {
         store.dispatch(updateTextureProgress(progress));
@@ -95,6 +102,10 @@ export default class Welcome extends Container {
     startBtn.x = 240;
     startBtn.y = 740;
     startBtn.visible = false;
+
+    startBtn.on('pointerdown', () => {
+      sound.play('startBtnSound', { volume: 0.35, loop: false });
+    });
 
     startBtn.on('transition_end', () => {
       store.dispatch(newRound());
@@ -124,6 +135,7 @@ export default class Welcome extends Container {
         if (progress === 100) {
           progressText.visible = false;
           startBtn.visible = true;
+          sound.play('bgm', { volume: 0.35, loop: true });
         }
       }
     );

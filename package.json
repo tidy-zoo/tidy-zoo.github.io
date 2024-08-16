@@ -21,6 +21,7 @@
     "vite": "^5.3.3"
   },
   "dependencies": {
+    "@pixi/sound": "^6.0.1",
     "@reduxjs/toolkit": "^2.2.6",
     "gsap": "^3.12.5",
     "pixi.js": "8.2.5",

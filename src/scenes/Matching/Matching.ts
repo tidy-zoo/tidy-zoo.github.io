@@ -4,6 +4,7 @@ import PairResult from './PairResult';
 import Timeline from './Timeline';
 import { watchStore } from '../../store';
 import TextField from '../../components/TextField';
+import { sound } from '@pixi/sound';
 
 export default class Matching extends Container {
   constructor() {
@@ -78,6 +79,14 @@ export default class Matching extends Container {
       state => {
         const isBothSideSelected = state.result.left >= 0 && state.result.right >= 0;
         reelLeft.interactive = reelRight.interactive = !isBothSideSelected;
+
+        if (isBothSideSelected) {
+          if (state.result.left === state.result.right) {
+            sound.play('correctSound', { volume: 0.35, loop: false });
+          } else {
+            sound.play('faultSound', { volume: 0.35, loop: false });
+          }
+        }
       }
     );
 

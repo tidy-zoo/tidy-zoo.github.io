@@ -3,10 +3,13 @@ import Button from '../../components/Button';
 import ScoreBoard from './ScoreBoard';
 import { newRound, store, watchStore } from '../../store';
 import TextField from '../../components/TextField';
+import { sound } from '@pixi/sound';
 
 export default class Scores extends Container {
   constructor() {
     super();
+
+    sound.play('resultSound', { volume: 0.35, loop: false });
 
     this.addChild(new Sprite(Texture.from('bgScores')));
 

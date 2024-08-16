@@ -3,6 +3,7 @@ import Welcome from './scenes/Welcome';
 import Matching from './scenes/Matching';
 import Scores from './scenes/Scores';
 import { watchStore } from './store';
+import { sound } from '@pixi/sound';
 
 declare global {
   interface Window {
@@ -73,6 +74,7 @@ declare global {
           break;
 
         case 'scores':
+          sound.play('resultSound', { volume: 0.35, loop: false });
           app.stage.removeChild(matching);
           app.stage.addChild(scores);
           break;

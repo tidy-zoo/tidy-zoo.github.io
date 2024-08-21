@@ -97,7 +97,9 @@ export default class Welcome extends Container {
         { alias: 'startBtnSound', src: '/sound/startBtnSound.mp3' },
         { alias: 'correctSound', src: '/sound/correctSound.mp3' },
         { alias: 'faultSound', src: '/sound/faultSound.mp3' },
-        { alias: 'resultSound', src: '/sound/resultSound.mp3' }
+        { alias: 'resultSound', src: '/sound/resultSound.mp3' },
+        { alias: 'animalClickSound', src: '/sound/animalClickSound.mp3' },
+        { alias: 'replayBtnSound', src: '/sound/replayBtnSound.mp3' }
       ],
       progress => {
         store.dispatch(updateTextureProgress(progress));

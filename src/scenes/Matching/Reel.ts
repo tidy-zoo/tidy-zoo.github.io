@@ -1,6 +1,7 @@
 import { Container, Sprite, Texture, Ticker } from 'pixi.js';
 import { selectSymbol, store } from '../../store';
 import gsap from 'gsap';
+import { sound } from '@pixi/sound';
 
 const NUM_SYMBOLS = 6;
 const INITIAL_SPEED = 5;
@@ -32,6 +33,7 @@ export default class Reel extends Container {
       } else {
         store.dispatch(selectSymbol({ right: id }));
       }
+      sound.play('animalClickSound', { volume: 0.35, loop: false });
     });
   }
 

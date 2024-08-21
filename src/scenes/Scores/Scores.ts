@@ -3,6 +3,7 @@ import Button from '../../components/Button';
 import ScoreBoard from './ScoreBoard';
 import { newRound, store, watchStore } from '../../store';
 import TextField from '../../components/TextField';
+import Promote from './Promote';
 
 export default class Scores extends Container {
   constructor() {
@@ -64,9 +65,22 @@ export default class Scores extends Container {
     );
 
     const replayBtn = new Button(Texture.from('replayBtn'));
-    replayBtn.x = 1525;
+    replayBtn.x = 1385;
     replayBtn.y = 740;
-    this.addChild(replayBtn);
+
+    const igBtn = new Button(Texture.from('igBtn'));
+    igBtn.x = 1615;
+    igBtn.y = 740;
+
+    const lineBtn = new Button(Texture.from('lineBtn'));
+    lineBtn.x = 1715;
+    lineBtn.y = 740;
+
+    const zeczecBtn = new Button(Texture.from('zeczecBtn'));
+    zeczecBtn.x = 1815;
+    zeczecBtn.y = 740;
+
+    this.addChild(replayBtn, igBtn, lineBtn, zeczecBtn);
 
     replayBtn.on('transition_end', () => {
       store.dispatch(newRound());
@@ -100,6 +114,18 @@ export default class Scores extends Container {
     historySumTextField.y = 635;
 
     this.addChild(totalSumLv1, totalSumLv2, totalSumLv3, totalSum, historySumTextField);
+
+    const promote = new Promote(this.width, this.height);
+    this.addChild(promote);
+
+    watchStore(
+      state => state.showPromote,
+      state => {
+        if (!state.showPromote) {
+          this.removeChild(promote);
+        }
+      }
+    );
 
     watchStore(
       state => state.historyScores,

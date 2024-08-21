@@ -14,8 +14,8 @@ export default class Button extends Sprite {
       gsap.to(this.scale, {
         duration: 0.8,
         ease: 'elastic.out(1, 0.3)',
-        x: this.scale.x + 0.3,
-        y: this.scale.y + 0.3,
+        x: this.scale.x + 0.1,
+        y: this.scale.y + 0.1,
         onStart: () => {},
         onComplete: () => {
           this.scale = initialScale;

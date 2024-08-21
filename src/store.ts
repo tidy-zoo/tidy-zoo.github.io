@@ -8,6 +8,7 @@ interface GameState {
   roundScore: 0;
   historyScores: { [index: string]: number };
   historyRoundScores: number[];
+  showPromote: boolean;
   result: {
     left: number;
     right: number;
@@ -70,6 +71,7 @@ export const initialState: GameState = {
     left: -1,
     right: -1
   },
+  showPromote: true,
   roundScore: 0,
   historyScores: readLocalStorage('historyScores') ?? {},
   historyRoundScores: readLocalStorage('historyRoundScores') ?? []
@@ -107,6 +109,9 @@ const gameSlice = createSlice({
     summarize(state) {
       state.countdowning = false;
       state.historyRoundScores = [...state.historyRoundScores, state.roundScore].sort((n1, n2) => n2 - n1).slice(0, 3);
+    },
+    hidePromote(state) {
+      state.showPromote = false;
     }
   },
   extraReducers(builder) {
@@ -114,6 +119,7 @@ const gameSlice = createSlice({
       .addCase(newRound.pending, state => {
         return {
           ...initialState,
+          showPromote: state.showPromote,
           textureProgress: state.textureProgress,
           historyRoundScores: state.historyRoundScores,
           historyScores: state.historyScores,
@@ -152,4 +158,4 @@ export const watchStore = (selector: (state: GameState) => any, callback: (state
   return store.subscribe(handleStateChange);
 };
 
-export const { updateTextureProgress } = gameSlice.actions;
+export const { updateTextureProgress, hidePromote } = gameSlice.actions;

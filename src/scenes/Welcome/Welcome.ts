@@ -33,6 +33,14 @@ export default class Welcome extends Container {
         { alias: 'totalSumLv1', src: '/assets/totalSumLv1.png' },
         { alias: 'totalSumLv2', src: '/assets/totalSumLv2.png' },
         { alias: 'totalSumLv3', src: '/assets/totalSumLv3.png' },
+        { alias: 'igBtn', src: '/assets/igBtn.png' },
+        { alias: 'lineBtn', src: '/assets/lineBtn.png' },
+        { alias: 'zeczecBtn', src: '/assets/zeczecBtn.png' },
+
+        { alias: 'promoteBg', src: '/assets/promote/bg.png' },
+        { alias: 'promoteCloseBtn', src: '/assets/promote/closeBtn.png' },
+        { alias: 'promoteLine', src: '/assets/promote/line.png' },
+        { alias: 'promoteZeczec', src: '/assets/promote/zeczec.png' },
 
         // symbols
         { alias: 'bearButt', src: '/assets/bear/butt.png' },

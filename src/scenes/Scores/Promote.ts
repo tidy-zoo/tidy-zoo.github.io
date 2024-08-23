@@ -24,6 +24,9 @@ class PromotePanel extends Container {
     const promoteLine = new Button(Texture.from('promoteLine'));
     promoteLine.x = 450;
     promoteLine.y = 180;
+    promoteLine.on('pointerup', () => {
+      window.open('https://liff.line.me/1645278921-kWRPP32q/?accountId=mieloo-design', '_blank');
+    });
 
     const promoteZeczec = new Button(Texture.from('promoteZeczec'));
     promoteZeczec.x = 790;

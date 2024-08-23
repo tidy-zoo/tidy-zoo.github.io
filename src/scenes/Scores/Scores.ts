@@ -4,7 +4,6 @@ import ScoreBoard from './ScoreBoard';
 import { newRound, store, watchStore } from '../../store';
 import TextField from '../../components/TextField';
 import Promote from './Promote';
-import { sound } from '@pixi/sound';
 
 export default class Scores extends Container {
   constructor() {
@@ -72,20 +71,22 @@ export default class Scores extends Container {
     const igBtn = new Button(Texture.from('igBtn'));
     igBtn.x = 1615;
     igBtn.y = 740;
+    igBtn.on('pointerup', () => {
+      window.open('https://www.instagram.com/sin_mieloo?igsh=MTIxcTBrbWo0ZWJqMw==', '_blank');
+    });
 
     const lineBtn = new Button(Texture.from('lineBtn'));
     lineBtn.x = 1715;
     lineBtn.y = 740;
+    lineBtn.on('pointerup', () => {
+      window.open('https://liff.line.me/1645278921-kWRPP32q/?accountId=mieloo-design', '_blank');
+    });
 
     const zeczecBtn = new Button(Texture.from('zeczecBtn'));
     zeczecBtn.x = 1815;
     zeczecBtn.y = 740;
 
     this.addChild(replayBtn, igBtn, lineBtn, zeczecBtn);
-
-    replayBtn.on('pointerdown', () => {
-      sound.play('replayBtnSound', { volume: 0.35, loop: false });
-    });
 
     replayBtn.on('transition_end', () => {
       store.dispatch(newRound());

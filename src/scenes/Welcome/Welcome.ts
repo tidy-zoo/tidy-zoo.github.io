@@ -94,12 +94,11 @@ export default class Welcome extends Container {
         { alias: 'twbearHeadSide', src: '/assets/twbear/headSide.png' },
 
         { alias: 'bgm', src: '/sound/bgm.mp3' },
-        { alias: 'startBtnSound', src: '/sound/startBtnSound.mp3' },
+        { alias: 'btnSound', src: '/sound/btnSound.mp3' },
         { alias: 'correctSound', src: '/sound/correctSound.mp3' },
         { alias: 'faultSound', src: '/sound/faultSound.mp3' },
         { alias: 'resultSound', src: '/sound/resultSound.mp3' },
-        { alias: 'animalClickSound', src: '/sound/animalClickSound.mp3' },
-        { alias: 'replayBtnSound', src: '/sound/replayBtnSound.mp3' }
+        { alias: 'animalClickSound', src: '/sound/animalClickSound.mp3' }
       ],
       progress => {
         store.dispatch(updateTextureProgress(progress));
@@ -112,10 +111,6 @@ export default class Welcome extends Container {
     startBtn.x = 240;
     startBtn.y = 740;
     startBtn.visible = false;
-
-    startBtn.on('pointerdown', () => {
-      sound.play('startBtnSound', { volume: 0.35, loop: false });
-    });
 
     startBtn.on('transition_end', () => {
       store.dispatch(newRound());

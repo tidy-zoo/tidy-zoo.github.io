@@ -1,3 +1,4 @@
+import { sound } from '@pixi/sound';
 import gsap from 'gsap';
 import { Sprite, Texture } from 'pixi.js';
 
@@ -10,6 +11,7 @@ export default class Button extends Sprite {
 
     this.on('pointerup', () => {
       const initialScale = this.scale.clone();
+      sound.play('btnSound', { volume: 0.35, loop: false });
 
       gsap.to(this.scale, {
         duration: 0.8,

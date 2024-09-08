@@ -4,6 +4,7 @@ import ScoreBoard from './ScoreBoard';
 import { newRound, store, watchStore } from '../../store';
 import TextField from '../../components/TextField';
 import Promote from './Promote';
+import { SocialMedia } from '../../enum';
 
 export default class Scores extends Container {
   constructor() {
@@ -72,21 +73,24 @@ export default class Scores extends Container {
     igBtn.x = 1615;
     igBtn.y = 740;
     igBtn.on('pointerup', () => {
-      window.open('https://www.instagram.com/sin_mieloo?igsh=MTIxcTBrbWo0ZWJqMw==', '_blank');
+      window.open(SocialMedia.Ig, '_blank');
     });
 
     const lineBtn = new Button(Texture.from('lineBtn'));
     lineBtn.x = 1715;
     lineBtn.y = 740;
     lineBtn.on('pointerup', () => {
-      window.open('https://liff.line.me/1645278921-kWRPP32q/?accountId=mieloo-design', '_blank');
+      window.open(SocialMedia.Line, '_blank');
     });
 
-    const zeczecBtn = new Button(Texture.from('zeczecBtn'));
-    zeczecBtn.x = 1815;
-    zeczecBtn.y = 740;
+    const fbBtn = new Button(Texture.from('fbBtn'));
+    fbBtn.x = 1815;
+    fbBtn.y = 740;
+    fbBtn.on('pointerup', () => {
+      window.open(SocialMedia.Fb, '_blank');
+    });
 
-    this.addChild(replayBtn, igBtn, lineBtn, zeczecBtn);
+    this.addChild(replayBtn, igBtn, lineBtn, fbBtn);
 
     replayBtn.on('transition_end', () => {
       store.dispatch(newRound());

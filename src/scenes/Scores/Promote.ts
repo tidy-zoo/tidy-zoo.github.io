@@ -1,6 +1,7 @@
 import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import Button from '../../components/Button';
 import { hidePromote, store } from '../../store';
+import { SocialMedia } from '../../enum';
 
 export default class Promote extends Container {
   constructor(width: number, height: number) {
@@ -25,12 +26,15 @@ class PromotePanel extends Container {
     promoteLine.x = 450;
     promoteLine.y = 180;
     promoteLine.on('pointerup', () => {
-      window.open('https://liff.line.me/1645278921-kWRPP32q/?accountId=mieloo-design', '_blank');
+      window.open(SocialMedia.Line, '_blank');
     });
 
-    const promoteZeczec = new Button(Texture.from('promoteZeczec'));
-    promoteZeczec.x = 790;
-    promoteZeczec.y = 180;
+    const promoteFb = new Button(Texture.from('promoteFb'));
+    promoteFb.x = 790;
+    promoteFb.y = 180;
+    promoteFb.on('pointerup', () => {
+      window.open(SocialMedia.Fb, '_blank');
+    });
 
     const promoteCloseBtn = new Button(Texture.from('promoteCloseBtn'));
     promoteCloseBtn.x = 1250;
@@ -39,6 +43,6 @@ class PromotePanel extends Container {
       store.dispatch(hidePromote());
     });
 
-    this.addChild(new Sprite(Texture.from('promoteBg')), promoteLine, promoteZeczec, promoteCloseBtn);
+    this.addChild(new Sprite(Texture.from('promoteBg')), promoteLine, promoteFb, promoteCloseBtn);
   }
 }
